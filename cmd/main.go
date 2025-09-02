@@ -1,6 +1,7 @@
 package main
 
 import (
+	"auth-api/internal/auth"
 	"auth-api/internal/config"
 	"auth-api/internal/database"
 	"auth-api/internal/router"
@@ -32,8 +33,10 @@ func main() {
 		log.Fatal(err)
 	}
 
+	authService := auth.NewService([]byte(cfg.Api.JwtSecret))
+
 	usersRepository := users.NewRepository(db)
-	usersUsecase := users.NewUsecase(usersRepository)
+	usersUsecase := users.NewUsecase(usersRepository, authService)
 
 	r := gin.Default()
 

@@ -9,7 +9,8 @@ type (
 	}
 
 	APIConfig struct {
-		Port string
+		Port      string
+		JwtSecret string
 	}
 
 	DBConfig struct {
@@ -20,7 +21,8 @@ type (
 func New() Config {
 	return Config{
 		Api: APIConfig{
-			Port: os.Getenv("API_PORT"),
+			Port:      os.Getenv("API_PORT"),
+			JwtSecret: os.Getenv("JWT_SECRET"),
 		},
 		DB: DBConfig{
 			Dsn: os.Getenv("DATABASE_URL"),
