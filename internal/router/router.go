@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUsersRoutes(r *gin.Engine, uc users.UsersUsecase) {
+func RegisterUsersRoutes(r *gin.Engine, uc users.Usecase) {
 	r.POST("/login", users.Login(uc))
 
 	r.GET("/logout", users.Logout(uc))
