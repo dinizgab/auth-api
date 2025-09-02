@@ -10,6 +10,7 @@ import (
 
 type Repository interface {
 	CreateUser(ctx context.Context, user User) error
+	GetUserByEmail(ctx context.Context, email string) (User, error)
 }
 
 type usersRepositoryImpl struct {
@@ -19,6 +20,8 @@ type usersRepositoryImpl struct {
 var (
 	//go:embed sql/create_user.sql
 	CreateUserQuery string
+	//go:embed sql/get_user_by_email.sql
+	GetUserByEmailQuery string
 )
 
 func NewRepository(db database.Database) Repository {
@@ -34,4 +37,14 @@ func (r *usersRepositoryImpl) CreateUser(ctx context.Context, user User) error {
 	}
 
 	return nil
+}
+
+func (r *usersRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	var user User
+	err := r.db.QueryRow(ctx, GetUserByEmailQuery, email).Scan(&user.ID, &user.Email, &user.Password)
+	if err != nil {
+		return User{}, fmt.Errorf("UserRepository.GetUserByEmail: %w", err)
+	}
+
+	return user, nil
 }
