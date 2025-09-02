@@ -7,21 +7,21 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type AuthService interface {
-	GenerateToken(userId string) (string, string, error)
+type Service interface {
+	GenerateTokenPair(userId string) (TokenPair, error)
 }
 
 type authServiceImpl struct {
 	jwtSecret []byte
 }
 
-func NewAuthService(jwtSecret []byte) AuthService {
+func NewService(jwtSecret []byte) Service {
 	return &authServiceImpl{
 		jwtSecret: jwtSecret,
 	}
 }
 
-func (as *authServiceImpl) GenerateToken(userId string) (string, string, error) {
+func (as *authServiceImpl) GenerateTokenPair(userId string) (TokenPair, error) {
 	accessTokenClaims := jwt.RegisteredClaims{
 		Issuer:    "auth-api.com",
 		Subject:   userId,
@@ -41,13 +41,18 @@ func (as *authServiceImpl) GenerateToken(userId string) (string, string, error) 
 
 	signedAccessToken, err := accessToken.SignedString(as.jwtSecret)
 	if err != nil {
-		return "", "", fmt.Errorf("AuthService.GenerateToken - Error signing access token: %w", err)
+		return TokenPair{}, fmt.Errorf("Service.GenerateToken - Error signing access token: %w", err)
 	}
 
 	signedRefreshToken, err := refreshToken.SignedString(as.jwtSecret)
 	if err != nil {
-		return "", "", fmt.Errorf("AuthService.GenerateToken - Error signing refresh token: %w", err)
+		return TokenPair{}, fmt.Errorf("Service.GenerateToken - Error signing refresh token: %w", err)
 	}
 
-	return signedAccessToken, signedRefreshToken, nil
+	tokenPair := TokenPair{
+		AccessToken:  signedAccessToken,
+		RefreshToken: signedRefreshToken,
+	}
+
+	return tokenPair, nil
 }
