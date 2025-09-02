@@ -7,9 +7,9 @@ import (
 )
 
 func RegisterUsersRoutes(r *gin.Engine, uc users.Usecase) {
-	r.POST("/login", users.Login(uc))
+	r.POST("/api/login", users.Login(uc))
 
-	r.GET("/logout", users.Logout(uc))
+	r.GET("/api/logout", users.Logout(uc))
 
-	r.POST("/register", users.Register(uc))
+	r.POST("/api/register", users.Register(uc))
 }
