@@ -4,7 +4,7 @@ create table if not exists users (
     id uuid default gen_random_uuid(),
     username varchar(100),
     email varchar(255),
-    password varchar(50)
+    password varchar(255)
 );
 -- +goose StatementEnd
 
