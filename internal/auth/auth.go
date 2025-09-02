@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type Service interface {
@@ -23,6 +24,7 @@ func NewService(jwtSecret []byte) Service {
 
 func (as *authServiceImpl) GenerateTokenPair(userId string) (TokenPair, error) {
 	accessTokenClaims := jwt.RegisteredClaims{
+		Audience:  []string{"auth-api.com"},
 		Issuer:    "auth-api.com",
 		Subject:   userId,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -30,6 +32,8 @@ func (as *authServiceImpl) GenerateTokenPair(userId string) (TokenPair, error) {
 	}
 
 	refreshTokenClaims := jwt.RegisteredClaims{
+		ID:        uuid.New().String(),
+		Audience:  []string{"auth-api.com"},
 		Issuer:    "auth-api.com",
 		Subject:   userId,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),

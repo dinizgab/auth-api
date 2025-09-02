@@ -44,7 +44,7 @@ func (u *usersUsecaseImpl) Login(ctx context.Context, email string, password str
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return auth.TokenPair{}, fmt.Errorf("UsersUsecase.Login: %w", err)
+		return auth.TokenPair{}, fmt.Errorf("wrong password")
 	}
 
 	tokenPair, err := u.authService.GenerateTokenPair(user.ID)
